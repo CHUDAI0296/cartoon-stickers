@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贴纸生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .result img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 贴纸生成器</h1>
+        <p>输入描述，AI 将为您生成个性化贴纸</p>
+        
+        <div class="form-group">
+            <input type="text" id="prompt" placeholder="例如：可爱的小猫、开心的表情、机器人贴纸..." />
+        </div>
+        
+        <button onclick="generateSticker()" id="generateBtn">生成贴纸</button>
+        
+        <div class="loading" id="loading">
+            <p>🔄 正在生成贴纸，请稍候...</p>
+        </div>
+        
+        <div class="result" id="result"></div>
+        <div class="error" id="error"></div>
+    </div>
+
+    <script>
+        async function generateSticker() {
+            const prompt = document.getElementById('prompt').value.trim();
+            const generateBtn = document.getElementById('generateBtn');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+            
+            if (!prompt) {
+                error.textContent = '请输入描述';
+                return;
+            }
+            
+            // 显示加载状态
+            generateBtn.disabled = true;
+            loading.style.display = 'block';
+            result.innerHTML = '';
+            error.textContent = '';
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.innerHTML = `
+                        <h3>🎉 贴纸生成成功！</h3>
+                        <img src="${data.image_url}" alt="生成的贴纸" />
+                        <p><a href="${data.image_url}" download>下载贴纸</a></p>
+                    `;
+                } else {
+                    error.textContent = data.error || '生成失败，请重试';
+                }
+            } catch (err) {
+                error.textContent = '网络错误，请重试';
+            } finally {
+                generateBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+        
+        // 回车键生成
+        document.getElementById('prompt').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateSticker();
+            }
+        });
+    </script>
+</body>
+</html> 
