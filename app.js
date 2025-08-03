@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const Replicate = require('replicate');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
@@ -18,11 +18,6 @@ if (!REPLICATE_API_TOKEN) {
     process.exit(1);
 }
 
-// 初始化 Replicate
-const replicate = new Replicate({
-    auth: REPLICATE_API_TOKEN,
-});
-
 // 路由
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -38,27 +33,68 @@ app.post('/generate', async (req, res) => {
         
         console.log(`开始生成贴纸: ${prompt}`);
         
-        // 调用 Replicate API
-        const output = await replicate.run(
-            "fofr/sticker-maker:4acb778eb059772225ec213948f0660867b2e03f277448f18cf1800b96a65a1a",
-            {
-                input: {
-                    prompt: prompt,
-                    output_format: "webp",
-                    steps: 17,
-                    output_quality: 100,
-                    negative_prompt: "racist, xenophobic, antisemitic, islamophobic, bigoted"
-                }
+        // 直接调用 Replicate API
+        const headers = {
+            "Authorization": `Token ${REPLICATE_API_TOKEN}`,
+            "Content-Type": "application/json"
+        };
+        
+        const payload = {
+            "version": "4acb778eb059772225ec213948f0660867b2e03f277448f18cf1800b96a65a1a",
+            "input": {
+                "prompt": prompt,
+                "output_format": "webp",
+                "steps": 17,
+                "output_quality": 100,
+                "negative_prompt": "racist, xenophobic, antisemitic, islamophobic, bigoted"
             }
+        };
+        
+        // 创建预测
+        const response = await axios.post(
+            "https://api.replicate.com/v1/predictions",
+            payload,
+            { headers }
         );
         
-        console.log('贴纸生成成功:', output);
+        if (response.status !== 201) {
+            return res.status(500).json({ error: 'API 调用失败' });
+        }
         
-        res.json({
-            success: true,
-            image_url: output,
-            prompt: prompt
-        });
+        const prediction = response.data;
+        const predictionId = prediction.id;
+        
+        // 等待预测完成
+        while (true) {
+            const statusResponse = await axios.get(
+                `https://api.replicate.com/v1/predictions/${predictionId}`,
+                { headers }
+            );
+            
+            if (statusResponse.status !== 200) {
+                return res.status(500).json({ error: '获取预测状态失败' });
+            }
+            
+            const statusData = statusResponse.data;
+            
+            if (statusData.status === 'succeeded') {
+                const outputUrl = statusData.output;
+                console.log('贴纸生成成功:', outputUrl);
+                
+                res.json({
+                    success: true,
+                    image_url: outputUrl,
+                    prompt: prompt
+                });
+                return;
+                
+            } else if (statusData.status === 'failed') {
+                return res.status(500).json({ error: '贴纸生成失败' });
+            }
+            
+            // 等待 2 秒后重试
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
         
     } catch (error) {
         console.error('生成失败:', error);

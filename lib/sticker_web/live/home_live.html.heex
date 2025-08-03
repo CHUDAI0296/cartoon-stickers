@@ -1,0 +1,153 @@
+<div id="home" phx-hook="AssignUserId">
+  <div class="mb-20 mt-12 w-full text-center">
+    <div class="mb-3 inline-flex items-center">
+      <img src="/images/oven.png" class="h-16" />
+      <p class="font-bold text-3xl text-orange-500 font-brand">StickerBaker</p>
+    </div>
+    <a
+      href="https://replicate.com/fofr/sticker-maker?utm_source=project&utm_campaign=stickerbaker"
+      class="text-xl hover:underline block"
+    >
+      Powered by fofr/sticker-maker on Replicate. Run it with an API &rarr;
+    </a>
+  </div>
+
+  <.form
+    for={@form}
+    id="prediction-form"
+    class="max-w-xl mx-auto"
+    phx-change="validate"
+    phx-submit="save"
+  >
+    <div class="flex items-center w-full justify-center">
+      <.input
+        field={@form[:prompt]}
+        type="text"
+        placeholder="What is your sticker?"
+        required
+        phx-mounted={JS.focus()}
+        class="px-3 py-2"
+      />
+      <button class="inline-flex items-center justify-center ml-2 border rounded-lg bg-white group hover:bg-orange-50 text-zinc-900 hover:text-orange-700 px-4 py-2.5 font-bold self-end">
+        <img class="hidden sm:inline-block h-7" src="/images/oven.png" alt="oven" />
+        <span>
+          Bake
+        </span>
+      </button>
+
+      <.button
+        name="submit"
+        value="generate"
+        phx-disable-with="Saving..."
+        class="hidden self-end ml-2"
+      >
+        Bake
+      </.button>
+    </div>
+    <span class="text-xs text-gray-500">
+      Try something simple like ‘cat’ or ‘high five’. You can make multiple stickers at once!
+    </span>
+
+    <div class="mt-6 relative">
+      <.link class="font-bold">
+        <span class="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-700">
+          NEW
+        </span>
+        Turn a face into a sticker!
+      </.link>
+
+      <div class="mt-4">
+        <section
+          class={"#{if @uploads.image.entries == [], do: "border-2", else: ""} border-orange-300 w-full border-dashed rounded-lg flex py-4 flex-col justify-center items-center text-center"}
+          phx-drop-target={@uploads.image.ref}
+        >
+          <form id="upload-form" phx-submit="save" phx-change="validate" class="">
+            <div>
+              <label
+                :if={@uploads.image.entries == []}
+                for={@uploads.image.ref}
+                class="relative cursor-pointer rounded-md bg-white font-medium focus-within:outline-none focus-within:ring-2 focus-within:ring-green-500 focus-within:ring-offset-2 hover:text-brand text-xs"
+              >
+                <.header class="">Upload</.header>
+                <div class="flex items-center justify-around gap-6 pt-4">
+                  <img
+                    src="/images/arnold_before.png"
+                    alt="arnold_before"
+                    class="h-12 rounded-md"
+                  /> ➡️
+                  <img src="/images/arnold.png" alt="arnold_before" class="h-12 rounded-md" />
+                </div>
+                <input id="file-upload" name="file-upload" type="file" class="sr-only" />
+              </label>
+              <.live_file_input upload={@uploads.image} class="hidden" />
+            </div>
+          </form>
+          <%!-- render each image entry --%>
+          <%= for entry <- @uploads.image.entries do %>
+            <article class="h-full">
+              <figure>
+                <.live_img_preview entry={entry} class="shadow mx-auto h-24 rounded-md" />
+              </figure>
+
+              <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
+              <%= for err <- upload_errors(@uploads.image, entry) do %>
+                <p class="text-red-500"><%= error_to_string(err) %></p>
+              <% end %>
+
+              <%= if upload_errors(@uploads.image, entry) != [] do %>
+                <.link navigate={~p"/"}>
+                  <.button>
+                    Try another upload
+                  </.button>
+                </.link>
+              <% end %>
+            </article>
+          <% end %>
+
+          <%!-- Phoenix.Component.upload_errors/1 returns a list of error atoms --%>
+          <%= for err <- upload_errors(@uploads.image) do %>
+            <p class="alert alert-danger"><%= error_to_string(err) %></p>
+          <% end %>
+        </section>
+        <p class="text-xs text-gray-500 mt-4">
+          Powered by
+          <a
+            href="https://replicate.com/fofr/face-to-sticker?utm_source=project&utm_campaign=stickerbaker"
+            class="underline"
+          >
+            fofr/face-to-sticker
+          </a>
+          on Replicate. All face uploads are deleted after processing.
+        </p>
+      </div>
+    </div>
+  </.form>
+
+  <div :if={not is_nil(@local_user_id)}>
+    <ul
+      id="my-predictions"
+      phx-update="stream"
+      role="list"
+      class="grid grid-cols-2 sm:grid-cols-3 mt-6 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-5 xl:gap-x-8"
+    >
+      <li :for={{id, prediction} <- @streams.my_predictions} id={id} class="relative flex-none">
+        <StickerWeb.Components.sticker id={id} prediction={prediction} />
+      </li>
+    </ul>
+  </div>
+  <.header class="mt-12">Latest</.header>
+  <ul
+    id="latest-predictions"
+    phx-update="stream"
+    phx-viewport-bottom="load-more"
+    role="list"
+    class="grid grid-cols-2 sm:grid-cols-3 mb-24 mt-6 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8"
+  >
+    <li :for={{id, prediction} <- @streams.latest_predictions} id={id} class="relative flex-none">
+      <StickerWeb.Components.sticker id={id} prediction={prediction} />
+    </li>
+  </ul>
+  <p :if={@page < @max_pages} class="animate-pulse text-xl text-center italic my-24">
+    <img class="h-32 mx-auto" src="/images/loading.png" alt="loading" /> Loading...
+  </p>
+</div>
