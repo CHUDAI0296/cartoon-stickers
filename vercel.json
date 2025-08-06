@@ -2,14 +2,15 @@
   "version": 2,
   "builds": [
     {
-      "src": "app.js",
-      "use": "@vercel/node"
-    },
-    {
       "src": "public/**/*",
       "use": "@vercel/static"
     }
   ],
+  "functions": {
+    "api/index.js": {
+      "runtime": "@vercel/node@18.x"
+    }
+  },
   "routes": [
     {
       "src": "/static/(.*)",
@@ -17,11 +18,11 @@
     },
     {
       "src": "/generate",
-      "dest": "/app.js"
+      "dest": "/api/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/app.js"
+      "dest": "/api/index.js"
     }
   ]
 }
