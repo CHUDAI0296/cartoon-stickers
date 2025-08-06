@@ -105,7 +105,13 @@ app.post('/generate', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`🚀 贴纸生成器运行在 http://localhost:${port}`);
-    console.log(`✅ API Token: ${REPLICATE_API_TOKEN.substring(0, 10)}...`);
-}); 
+// 本地开发时启动服务器
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`🚀 贴纸生成器运行在 http://localhost:${port}`);
+        console.log(`✅ API Token: ${REPLICATE_API_TOKEN.substring(0, 10)}...`);
+    });
+}
+
+// 导出app供Vercel使用
+module.exports = app; 
