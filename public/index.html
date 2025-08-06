@@ -1,1 +1,291 @@
- 
+<!DOCTYPE html>
+<html lang="en" style="scrollbar-gutter: stable;">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/images/chef.png" />
+    <link rel="apple-touch-icon" href="/static/images/chef.png" />
+
+    <title>Cartoon Stickers - AI Sticker Generator with Transparent Backgrounds | StickerBaker</title>
+    <meta name="description" content="Create cartoon stickers instantly with AI. Generate custom cartoon graphics with transparent backgrounds perfect for messaging, social media, and fun projects. Free cartoon sticker maker." />
+    <meta name="keywords" content="cartoon stickers, AI cartoon maker, cartoon graphics, custom cartoon stickers, transparent background stickers, cartoon sticker generator, free cartoon maker, animated stickers" />
+    <meta property="og:title" content="Cartoon Stickers - AI Sticker Generator with Transparent Backgrounds" />
+    <meta property="og:description" content="Create cartoon stickers instantly with AI. Generate custom cartoon graphics with transparent backgrounds perfect for messaging and social media." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://cartoonstickers.online" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cartoon Stickers - AI Sticker Generator with Transparent Backgrounds" />
+    <meta name="twitter:description" content="Create cartoon stickers instantly with AI. Generate custom cartoon graphics with transparent backgrounds." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'brand': ['Fredoka', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1YWKYJT8T5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-1YWKYJT8T5');
+    </script>
+  </head>
+  <body class="bg-white antialiased">
+    <div id="home">
+      <div class="mb-20 mt-12 w-full text-center">
+        <div class="mb-3 inline-flex items-center">
+          <img src="/static/images/chef.png" class="h-16" />
+          <p class="font-bold text-3xl text-orange-500 font-brand">StickerBaker</p>
+        </div>
+        <p class="text-xl text-gray-600 mb-4">
+          Create cartoon stickers with AI. Generate fun graphics with transparent backgrounds.
+        </p>
+        <a
+          href="https://replicate.com/fofr/sticker-maker?utm_source=project&utm_campaign=stickerbaker"
+          class="text-sm text-gray-500 hover:underline block"
+        >
+          Powered by fofr/sticker-maker on Replicate &rarr;
+        </a>
+      </div>
+
+      <form id="prediction-form" class="max-w-xl mx-auto">
+        <div class="flex items-center w-full justify-center">
+          <input
+            id="prompt"
+            name="prompt"
+            type="text"
+            placeholder="What cartoon sticker do you want?"
+            required
+            class="px-3 py-2 border rounded-lg flex-1"
+          />
+          <button 
+            type="submit"
+            class="inline-flex items-center justify-center ml-2 border rounded-lg bg-white group hover:bg-orange-50 text-zinc-900 hover:text-orange-700 px-4 py-2.5 font-bold"
+          >
+            <img class="hidden sm:inline-block h-7" src="/static/images/chef.png" alt="chef" />
+            <span>Bake</span>
+          </button>
+        </div>
+        <span class="text-xs text-gray-500">
+          Create cartoon stickers instantly! Try 'cartoon cat', 'funny emoji', or 'cute animal'. Perfect for messaging apps and social media.
+        </span>
+      </form>
+
+      <div id="result" class="max-w-xl mx-auto mt-8 text-center hidden">
+        <div id="loading" class="hidden">
+          <img class="h-32 mx-auto animate-pulse" src="/static/images/loading.png" alt="loading" />
+          <p class="text-xl italic">Generating your sticker...</p>
+        </div>
+        <div id="success" class="hidden">
+          <img id="generated-image" class="mx-auto rounded-lg shadow-lg max-w-full" alt="Generated sticker" />
+          <button id="download-btn" class="mt-4 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
+            Download Sticker
+          </button>
+        </div>
+        <div id="error" class="hidden text-red-500">
+          <p>Sorry, something went wrong. Please try again.</p>
+        </div>
+      </div>
+
+      <!-- Example Stickers Gallery -->
+      <div class="mt-16 mb-12">
+        <h2 class="text-2xl font-bold text-center mb-8 text-gray-800 font-brand">
+          ✨ Example Cartoon Stickers
+        </h2>
+        <p class="text-center text-gray-600 mb-8">
+          See what amazing cartoon stickers you can create with AI!
+        </p>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 max-w-4xl mx-auto px-4">
+          <!-- Example sticker 1 -->
+          <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+            <div class="aspect-square bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center mb-3 p-2">
+              <img src="/static/images/cartoon-cat.png" alt="cartoon cat sticker" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="w-16 h-16 bg-orange-400 rounded-full items-center justify-center hidden">
+                <span class="text-2xl">🐱</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center font-medium">"cartoon cat"</p>
+          </div>
+
+          <!-- Example sticker 2 -->
+          <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+            <div class="aspect-square bg-gradient-to-br from-green-50 to-blue-50 rounded-lg flex items-center justify-center mb-3 p-2">
+              <img src="/static/images/rocket-ship.png" alt="rocket ship sticker" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="w-16 h-16 bg-green-400 rounded-full items-center justify-center hidden">
+                <span class="text-2xl">🚀</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center font-medium">"rocket ship"</p>
+          </div>
+
+          <!-- Example sticker 3 -->
+          <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+            <div class="aspect-square bg-gradient-to-br from-pink-50 to-red-50 rounded-lg flex items-center justify-center mb-3 p-2">
+              <img src="/static/images/heart-emoji.png" alt="heart emoji sticker" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="w-16 h-16 bg-pink-400 rounded-full items-center justify-center hidden">
+                <span class="text-2xl">❤️</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center font-medium">"heart emoji"</p>
+          </div>
+
+          <!-- Example sticker 4 -->
+          <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+            <div class="aspect-square bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg flex items-center justify-center mb-3 p-2">
+              <img src="/static/images/sunshine.png" alt="sunshine sticker" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="w-16 h-16 bg-yellow-400 rounded-full items-center justify-center hidden">
+                <span class="text-2xl">☀️</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center font-medium">"sunshine"</p>
+          </div>
+
+          <!-- Example sticker 5 -->
+          <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+            <div class="aspect-square bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg flex items-center justify-center mb-3 p-2">
+              <img src="/static/images/unicorn.png" alt="unicorn sticker" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="w-16 h-16 bg-purple-400 rounded-full items-center justify-center hidden">
+                <span class="text-2xl">🦄</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center font-medium">"unicorn"</p>
+          </div>
+
+          <!-- Example sticker 6 -->
+          <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+            <div class="aspect-square bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex items-center justify-center mb-3 p-2">
+              <img src="/static/images/game-controller.png" alt="game controller sticker" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="w-16 h-16 bg-indigo-400 rounded-full items-center justify-center hidden">
+                <span class="text-2xl">🎮</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center font-medium">"game controller"</p>
+          </div>
+
+          <!-- Example sticker 7 -->
+          <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+            <div class="aspect-square bg-gradient-to-br from-teal-50 to-green-50 rounded-lg flex items-center justify-center mb-3 p-2">
+              <img src="/static/images/taco.png" alt="taco sticker" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="w-16 h-16 bg-teal-400 rounded-full items-center justify-center hidden">
+                <span class="text-2xl">🌮</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center font-medium">"taco"</p>
+          </div>
+
+          <!-- Example sticker 8 -->
+          <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+            <div class="aspect-square bg-gradient-to-br from-red-50 to-pink-50 rounded-lg flex items-center justify-center mb-3 p-2">
+              <img src="/static/images/pizza-slice.png" alt="pizza slice sticker" class="w-full h-full object-contain rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="w-16 h-16 bg-red-400 rounded-full items-center justify-center hidden">
+                <span class="text-2xl">🍕</span>
+              </div>
+            </div>
+            <p class="text-sm text-gray-600 text-center font-medium">"pizza slice"</p>
+          </div>
+        </div>
+
+        <div class="text-center mt-8">
+          <p class="text-gray-500 text-sm">
+            Click on any example above to try it, or create your own unique cartoon sticker!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Form submission handler
+      document.getElementById('prediction-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const prompt = document.getElementById('prompt').value;
+        if (!prompt) return;
+        
+        const resultDiv = document.getElementById('result');
+        const loadingDiv = document.getElementById('loading');
+        const successDiv = document.getElementById('success');
+        const errorDiv = document.getElementById('error');
+        
+        // Show loading
+        resultDiv.classList.remove('hidden');
+        loadingDiv.classList.remove('hidden');
+        successDiv.classList.add('hidden');
+        errorDiv.classList.add('hidden');
+        
+        try {
+          const response = await fetch('/generate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ prompt })
+          });
+          
+          const data = await response.json();
+          
+          loadingDiv.classList.add('hidden');
+          
+          if (data.success) {
+            document.getElementById('generated-image').src = data.image_url;
+            document.getElementById('download-btn').onclick = () => {
+              const link = document.createElement('a');
+              link.href = data.image_url;
+              link.download = `sticker-${prompt.replace(/\s+/g, '-')}.webp`;
+              link.click();
+            };
+            successDiv.classList.remove('hidden');
+          } else {
+            errorDiv.classList.remove('hidden');
+          }
+        } catch (error) {
+          loadingDiv.classList.add('hidden');
+          errorDiv.classList.remove('hidden');
+        }
+      });
+
+      // Example sticker click handlers
+      document.addEventListener('DOMContentLoaded', function() {
+        const exampleStickers = document.querySelectorAll('.grid > div');
+        const promptInput = document.getElementById('prompt');
+        
+        exampleStickers.forEach(sticker => {
+          sticker.addEventListener('click', function() {
+            const promptText = this.querySelector('p').textContent.replace(/"/g, '');
+            promptInput.value = promptText;
+            promptInput.focus();
+            
+            // Add a subtle animation to show the click worked
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+              this.style.transform = 'scale(1)';
+            }, 150);
+          });
+          
+          // Add cursor pointer to show it's clickable
+          sticker.style.cursor = 'pointer';
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 // 中间件
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/static', express.static('static'));
+app.use('/static', express.static('public/static'));
 
 // 检查 API Token
 const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
